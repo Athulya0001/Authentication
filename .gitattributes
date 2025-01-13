@@ -1,2 +1,0 @@
-# Ensure JSON files use LF
-*.json text eol=lf

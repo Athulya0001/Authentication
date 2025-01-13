@@ -1,7 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './connectDB.js';
-import route from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+
+
 
 const app = express();
 
@@ -9,11 +11,18 @@ dotenv.config();
 
 const port = process.env.PORT || 4000;
 
+app.use(express.json());
+
+
+app.use(express.urlencoded({extended: true}))
+
 connectDB()
+
+
 
 app.set("view engine", "ejs");
 
-app.use("/auth", route)
+app.use("/auth", authRoutes)
 
 app.get("/", (req, res)=>{
     res.render('index')
