@@ -1,5 +1,11 @@
 import User from "../model/userModel.js";
 
+// rendering signup form
+export const signupForm = (req, res) => {
+    return res.render('signup');
+};
+
+//  function handling signup data submission
 export const signup = async (req, res) => {
     console.log(req.body, "req body")
 
@@ -34,6 +40,10 @@ export const getAllUsers = async (req, res) => {
     }
 
 }
+
+export const signinForm = (req, res) => {
+    return res.render('signin');
+};
 
 export const signin = async (req, res) => {
 

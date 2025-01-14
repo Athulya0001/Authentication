@@ -21,7 +21,16 @@ app.set("view engine", "ejs");
 
 
 app.use("/auth", authRoutes)
-app.use("/", authRoutes)
+// app.use("/", authRoutes)
+
+// app.get("/auth/signup",(req, res)=>{
+//     res.render("signup");
+// })
+
+// app.get("/auth/signin",(req, res)=>{
+//     res.render("signin");
+// })
+
 // app.use("/", getAllUsers)
 
 // app.get("/", (req, res)=>{
