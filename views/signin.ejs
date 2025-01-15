@@ -12,7 +12,27 @@
         <input type="email" name="email" id="email" placeholder="Enter Your Email">
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
-        <button type="submit">Sign In</button>
+        <button type="submit" onclick="alertBox()">Sign In</button>
     </form>
+    <script>
+        async function alertBox() {
+            const response = await fetch("http://localhost:3000/auth/dummy", {
+                method: "GET"
+            })
+            // const data = await response.json();
+            // console.log(data, "data")
+
+            if(!response.ok){
+                const errData = await response.json();
+                alert(errData.message)
+            }else{
+                const data =  await response.json();
+                alert(data.message)
+            }
+
+
+            alertBox()
+        }
+    </script>
 </body>
 </html>

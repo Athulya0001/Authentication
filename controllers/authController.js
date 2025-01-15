@@ -1,9 +1,10 @@
 import User from "../model/userModel.js";
+// import alert from "alert"
 
 // rendering signup form
-export const signupForm = (req, res) => {
-    return res.render('signup');
-};
+// export const signupForm = (req, res) => {
+//     return res.render('signup');
+// };
 
 //  function handling signup data submission
 export const signup = async (req, res) => {
@@ -16,7 +17,8 @@ export const signup = async (req, res) => {
         if (!existUser) {
             const newUser = new User({ name, email, password });
             await newUser.save();
-            return res.status(200).json({ success: true, message: "User registered successfully", newUser })
+            // return res.status(200).json({ success: true, message: "User registered successfully", newUser })
+            return res.redirect("signin")
         } else {
             return res.status(500).json("User Already Exist")
         }
@@ -41,9 +43,9 @@ export const getAllUsers = async (req, res) => {
 
 }
 
-export const signinForm = (req, res) => {
-    return res.render('signin');
-};
+// export const signinForm = (req, res) => {
+//     return res.render('signin');
+// };
 
 export const signin = async (req, res) => {
 
@@ -51,23 +53,24 @@ export const signin = async (req, res) => {
 
     try {
         const user = await User.findOne({ email: email });
-        // if(!user){
-        //     return res.status(401).json({success: false, message: "User not found"})
-        // }else{
-        //     if(user.password === password){
-        //         return res.status(200).json({success: true, message: "user logged in successfully", user})
-        //     }
-        // }
 
         if (user) {
             if (user.password === password) {
                 return res.status(200).json({ success: true, message: "user logged in successfully", user })
-            }else{
-                return res.status(401).json({success: false, message: "User not found"})
+                // return res.redirect("index")
+                // return res.redirect("signin")
+            }
+            else{
+                // return res.status(401).json({success: false, message: "User not found"})
+                res.send("user not found")
             }
         }
     } catch (error) {
         return res.status(201).json({ success: false, message: "Error logging In" })
     }
 
+}
+
+export const dummy = async (req, res)=>{
+    res.status(200).json({message:"dummy file"})
 }
