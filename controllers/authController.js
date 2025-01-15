@@ -54,17 +54,17 @@ export const signin = async (req, res) => {
     try {
         const user = await User.findOne({ email: email });
 
-        if (user) {
-            if (user.password === password) {
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }else{
+            if (user.password !== password) {
+                return res.status(200).json({ success: true, message: "Incorrect password", user })
+            }else{
                 return res.status(200).json({ success: true, message: "user logged in successfully", user })
-                // return res.redirect("index")
-                // return res.redirect("signin")
-            }
-            else{
-                // return res.status(401).json({success: false, message: "User not found"})
-                res.send("user not found")
             }
         }
+        
+        
     } catch (error) {
         return res.status(201).json({ success: false, message: "Error logging In" })
     }

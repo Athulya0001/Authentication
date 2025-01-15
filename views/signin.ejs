@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <h1>Sign In</h1>
     <form action="/auth/signin" method="post">
@@ -12,27 +14,60 @@
         <input type="email" name="email" id="email" placeholder="Enter Your Email">
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
-        <button type="submit" onclick="alertBox()">Sign In</button>
+        <button type="submit" onclick="alertBox(event)">Sign In</button>
     </form>
     <script>
-        async function alertBox() {
-            const response = await fetch("http://localhost:3000/auth/dummy", {
-                method: "GET"
-            })
-            // const data = await response.json();
-            // console.log(data, "data")
+        async function alertBox(event) {
+            event.preventDefault();
+            // const response = await fetch("http://localhost:3000/auth/dummy", {
+            //     method: "GET"
+            // })
 
-            if(!response.ok){
-                const errData = await response.json();
-                alert(errData.message)
-            }else{
-                const data =  await response.json();
-                alert(data.message)
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/auth/signin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+                console.log(response)
+                // console.log(response)
+
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    alert(`Error: ${errData.message}`);
+                } else {
+                    const data = await response.json();
+                    alert(`Success: ${data.message}`);
+
+                    window.location.href = "/";
+                }
+            } catch (error) {
+                alert("Error finding User");
+                console.log(error)
             }
 
 
-            alertBox()
+
+
         }
+
+        // const data = await response.json();
+        // console.log(data, "data")
+
+        // if(!response.ok){
+        //     const errData = await response.json();
+        //     alert(errData.message)
+        // }else{
+        //     const data =  await response.json();
+        //     alert(data.message)
+        // }
     </script>
 </body>
+
 </html>
