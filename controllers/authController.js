@@ -1,5 +1,6 @@
 import User from "../model/userModel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 
 export const signup = async (req, res) => {
@@ -64,8 +65,15 @@ export const signin = async (req, res) => {
                 return res.status(401).json({ success: false, message: "incorrect password" })
 
             }
+            const token = jwt.sign(
+                { userId: existingUser._id}, 
+                process.env.JWT_SECRET 
+            );
+            console.log(token,"token")
 
-            return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser })
+            // res.cookie("token", token);
+
+            return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser, token })
 
         }
         return res.status(404).json({ success: false, message: "User not found" });
@@ -77,8 +85,4 @@ export const signin = async (req, res) => {
         return res.status(201).json({ success: false, message: "Error logging In" })
     }
 
-}
-
-export const dummy = async (req, res) => {
-    res.status(200).json({ message: "dummy file" })
 }

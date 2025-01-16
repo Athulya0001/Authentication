@@ -4,24 +4,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            color: #2d3436;
+        }
+
+        .navbar {
+            width: 30%;
+            background: #384ad0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .navbar h2 {
+            margin-bottom: 20px;
+        }
+
+        .navbar p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #0721e8;
+        }
+
+        form {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .box label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #2d3436;
+        }
+
+        .box input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .box input:focus {
+            border-color: #384ad0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            background: #384ad0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4551ad;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Sign In</h1>
-    <form action="/auth/signin" method="post">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Enter Your Email">
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password">
-        <button type="submit" onclick="alertBox(event)">Sign In</button>
-    </form>
+
+    <div class="navbar">
+        <% if (name) { %>
+            <h2>Welcome, <%= name %>!</h2>
+        <% } else { %>
+            <h2>Welcome to Our Website!</h2>
+        <% } %>
+        <p>Sign in to access all features and explore amazing content. We're excited to have you!</p>
+    </div>
+
+
+    <div class="container">
+        <h1>Sign In</h1>
+        <form action="/auth/signin" method="post">
+            <div class="box">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter Your Email">
+            </div>
+            <div class="box">
+
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter Your Password">
+            </div>
+            <button type="submit" onclick="alertBox(event)">Sign In</button>
+        </form>
+        <div>
+            <p>Don't have an account? <a href="/auth/signup" style="text-decoration: none;">Signup</a>
+            </p>
+        </div>
+    </div>
+
     <script>
         async function alertBox(event) {
             event.preventDefault();
-            // const response = await fetch("http://localhost:3000/auth/dummy", {
-            //     method: "GET"
-            // })
 
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
@@ -45,7 +163,8 @@
                     const data = await response.json();
                     alert(`Success: ${data.message}`);
 
-                    window.location.href = "/";
+                    // window.location.href = "/";
+                    window.location.reload();
                 }
             } catch (error) {
                 alert("Error finding User");
@@ -56,17 +175,6 @@
 
 
         }
-
-        // const data = await response.json();
-        // console.log(data, "data")
-
-        // if(!response.ok){
-        //     const errData = await response.json();
-        //     alert(errData.message)
-        // }else{
-        //     const data =  await response.json();
-        //     alert(data.message)
-        // }
     </script>
 </body>
 
