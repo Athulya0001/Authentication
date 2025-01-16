@@ -1,24 +1,30 @@
 import User from "../model/userModel.js";
-// import alert from "alert"
+import bcrypt from "bcrypt";
 
-// rendering signup form
-// export const signupForm = (req, res) => {
-//     return res.render('signup');
-// };
 
-//  function handling signup data submission
 export const signup = async (req, res) => {
     console.log(req.body, "req body")
 
-    const { email, name, password } = req.body;
+    const { name, email, password } = req.body;
 
     try {
+        const salt = await bcrypt.genSalt();
+        console.log(salt, " generatedsalt");
+
+        const hashedPassword = await bcrypt.hash(password, salt);
+        console.log(hashedPassword, "hashed password");
+
+
         const existUser = await User.findOne({ email: email });
+
         if (!existUser) {
-            const newUser = new User({ name, email, password });
+            const newUser = new User({
+                name: name,
+                email: email,
+                password: hashedPassword,
+            });
             await newUser.save();
-            // return res.status(200).json({ success: true, message: "User registered successfully", newUser })
-            return res.redirect("signin")
+            return res.status(200).json({ success: true, message: "User registered successfully", user: newUser })
         } else {
             return res.status(500).json("User Already Exist")
         }
@@ -43,34 +49,36 @@ export const getAllUsers = async (req, res) => {
 
 }
 
-// export const signinForm = (req, res) => {
-//     return res.render('signin');
-// };
 
 export const signin = async (req, res) => {
 
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ email: email });
 
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }else{
-            if (user.password !== password) {
-                return res.status(200).json({ success: true, message: "Incorrect password", user })
-            }else{
-                return res.status(200).json({ success: true, message: "user logged in successfully", user })
+        if (existingUser) {
+            const matchPassword = await bcrypt.compare(password, existingUser.password);
+
+            if (!matchPassword) {
+                return res.status(401).json({ success: false, message: "incorrect password" })
+
             }
+
+            return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser })
+
         }
-        
-        
+        return res.status(404).json({ success: false, message: "User not found" });
+
+
+
+
     } catch (error) {
         return res.status(201).json({ success: false, message: "Error logging In" })
     }
 
 }
 
-export const dummy = async (req, res)=>{
-    res.status(200).json({message:"dummy file"})
+export const dummy = async (req, res) => {
+    res.status(200).json({ message: "dummy file" })
 }
