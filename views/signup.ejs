@@ -117,17 +117,17 @@
         <form action="/auth/signup" method="POST">
             <div class="box">
                 <label for="name">Name:</label>
-            <input type="text" name="name" id="name" placeholder="Enter Your Name">
+            <input type="text" name="name" id="name" placeholder="Enter Your Name" autocomplete="off">
             </div>
             <div class="box">
                 <label for="email">Email:</label>
-            <input type="email" name="email" id="email" placeholder="Enter Your Email">
+            <input type="email" name="email" id="email" placeholder="Enter Your Email" autocomplete="off">
             </div>
             <div class="box">
                 <label for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Enter Your Password">
             </div>
-            <button type="submit">Sign Up</button>
+            <button type="submit" onclick="alertBox(event)">Sign Up</button>
         </form>
         <br>
         <div>
@@ -136,6 +136,47 @@
         </div>
 
     </div>
+
+    <script>
+        async function alertBox(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const name = document.getElementById("name").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/auth/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password, name }),
+                });
+                console.log(response)
+                // console.log(response)
+
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    alert(`Error: ${errData.message}`);
+                } else {
+                    const data = await response.json();
+                    alert(`Success: ${data.message}`);
+
+                    window.location.href = "/auth/signin";
+                    // window.location.reload();
+                }
+            } catch (error) {
+                alert("Error finding User");
+                console.log(error)
+            }
+
+
+
+
+        }
+    </script>
 
 </body>
 </html>
