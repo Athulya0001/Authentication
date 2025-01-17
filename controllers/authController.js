@@ -11,10 +11,10 @@ export const signup = async (req, res) => {
 
     try {
         const salt = await bcrypt.genSalt();
-        console.log(salt, " generatedsalt");
+        // console.log(salt, " generatedsalt");
 
         const hashedPassword = await bcrypt.hash(password, salt);
-        console.log(hashedPassword, "hashed password");
+        // console.log(hashedPassword, "hashed password");
 
 
         const existUser = await User.findOne({ email: email });
@@ -59,34 +59,32 @@ export const signin = async (req, res) => {
     try {
         const existingUser = await User.findOne({ email: email });
 
-        if (existingUser) {
-            const matchPassword = await bcrypt.compare(password, existingUser.password);
-            console.log(matchPassword,password,"pasword")
-
-
-            if (!matchPassword) {
-                return res.status(401).json({ success: false, message: "incorrect password" })
-
-            }
-            const token =  jwt.sign(
-                { userId: existingUser._id, name: existingUser.name}, 
-                process.env.JWT_SECRET_KEY, {httpOnly: true}
-            );
-            console.log(token,"token")
-
-            res.cookie("auth_token", token);
-
-            // return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser.name, token })
-            // return res,render("signin", existingUser.name)
+        if (!existingUser) {
+            return res.status(404).json({ success: false, message: "User not found" });
 
         }
-        return res.status(404).json({ success: false, message: "User not found" });
+        const matchPassword = await bcrypt.compare(password, existingUser.password);
+        console.log(matchPassword,password,"pasword")
 
+        if (!matchPassword) {
+            return res.status(401).json({ success: false, message: "incorrect password" })
+        }
+        const token =  jwt.sign(
+            { userId: existingUser._id, name: existingUser.name}, 
+            process.env.JWT_SECRET_KEY
+        );
+        console.log(token,"token")
 
-
-
+        res.cookie("auth_token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+        return res.status(200).json({
+            success: true,
+            message: "User logged in successfully",
+            user: { name: existingUser.name, email: existingUser.email },
+            token,
+        });
+        
     } catch (error) {
-        return res.status(201).json({ success: false, message: "Error logging In" })
-    }
+        console.error("Error during login:", error);
+        return res.status(500).json({ success: false, message: "An error occurred while logging in" });    }
 
 }

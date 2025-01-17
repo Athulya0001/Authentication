@@ -10,9 +10,13 @@ route.get("/signup", (req, res)=>{
     return res.render("signup");
 })
 
-route.get("/signin", (req, res)=>{
-    return res.render("signin", {name});
-})
+
+route.get("/signin", checkAuth, (req, res) => {
+    return res.render("signin", {
+        name: req.user ? req.user.name : null, 
+    });
+});
+
 
 // route.get("/in", (req, res)=>{
 //     return res.render("signin");
