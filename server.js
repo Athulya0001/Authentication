@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './connectDB.js';
 import authRoutes from './routes/authRoutes.js';
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({extended: true}))
 
 connectDB()
 
+app.use(cookieParser())
 
 app.set("view engine", "ejs");
 

@@ -1,5 +1,6 @@
 import User from "../model/userModel.js";
 import bcrypt from "bcrypt";
+import { render } from "ejs";
 import jwt from "jsonwebtoken";
 
 
@@ -53,27 +54,30 @@ export const getAllUsers = async (req, res) => {
 
 export const signin = async (req, res) => {
 
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
 
     try {
         const existingUser = await User.findOne({ email: email });
 
         if (existingUser) {
             const matchPassword = await bcrypt.compare(password, existingUser.password);
+            console.log(matchPassword,password,"pasword")
+
 
             if (!matchPassword) {
                 return res.status(401).json({ success: false, message: "incorrect password" })
 
             }
-            const token = jwt.sign(
-                { userId: existingUser._id}, 
-                process.env.JWT_SECRET 
+            const token =  jwt.sign(
+                { userId: existingUser._id, name: existingUser.name}, 
+                process.env.JWT_SECRET_KEY, {httpOnly: true}
             );
             console.log(token,"token")
 
-            // res.cookie("token", token);
+            res.cookie("auth_token", token);
 
-            return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser, token })
+            // return res.status(200).json({ success: true, message: "user logged in successfully", user: existingUser.name, token })
+            // return res,render("signin", existingUser.name)
 
         }
         return res.status(404).json({ success: false, message: "User not found" });
